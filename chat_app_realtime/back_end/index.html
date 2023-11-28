@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <div>
+      <ul id="messages"></ul>
+    </div>
+
+    <div>
+      <input id="message" type="text" />
+      <button onclick="handleSubmitNewMessage()">Submit</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script>
+      const socket = io('http://localhost:5001');
+
+      const message = document.getElementById('message');
+      const messages = document.getElementById('messages');
+
+      const handleSubmitNewMessage = () => {
+        socket.emit('message', { data: message.value });
+      };
+
+      socket.on('message', ({ data }) => {
+        handleNewMessage(data);
+      });
+
+      const handleNewMessage = (message) => {
+        messages.appendChild(buildNewMessage(message));
+      };
+
+      const buildNewMessage = (message) => {
+        const li = document.createElement('li');
+        li.appendChild(document.createTextNode(message));
+        return li;
+      };
+    </script>
+  </body>
+</html>
